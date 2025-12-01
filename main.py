@@ -14,11 +14,23 @@ def apply_style(root: tk.Tk):
     style = ttk.Style(root)
     style.theme_use("clam")
 
-    style.configure("TButton", padding=(12, 8), font=("Segoe UI", 10))
-    style.configure("TLabel", font=("Segoe UI", 10))
+    bg_blue = "#d7e6f7"
+    title_fg = "#204060"
+    button_bg = "#d7e6f7"   # your original neutral blue
+    button_fg = "#204060"   # dark blue text
+    button_active = "#a7bfe2"  # small shade shift when hovered
 
-    style.configure("Header.TLabel", font=("Segoe UI", 18, "bold"))
-    style.configure("Title.TLabel", font=("Segoe UI", 20, "bold"))
+    # Set background for root window
+    root.configure(bg=bg_blue)
+    style.configure("TFrame", background=bg_blue)
+    style.configure("TLabel", background=bg_blue)
+
+    style.configure("TButton", padding=(12, 8), font=("Segoe UI", 10), background=button_bg, foreground=button_fg)
+
+    style.configure("TLabel", font=("Segoe UI", 10), foreground=button_fg)
+
+    style.configure("Header.TLabel", font=("Segoe UI", 18, "bold"), background=bg_blue, foreground=title_fg)
+    style.configure("Title.TLabel", font=("Segoe UI", 20, "bold"), background=bg_blue, foreground=title_fg)
 
     # Optional: make ttk Frames match a nicer background
     # bg = style.lookup("TFrame", "background")
@@ -39,7 +51,7 @@ class FactPagerPage(tk.Frame):
         auto_advance=False,
         auto_ms=2500,
     ):
-        super().__init__(master)
+        super().__init__(master, bg="#8ab3f5")
         self.category = category
         self.go_home_callback = go_home_callback
         self.other_mode_callback = other_mode_callback
@@ -59,7 +71,7 @@ class FactPagerPage(tk.Frame):
         # Layout: title, canvas, nav row
         ttk.Label(self, text=category, style="Title.TLabel").pack(pady=(12, 8))
 
-        self.canvas = tk.Canvas(self, highlightthickness=0)
+        self.canvas = tk.Canvas(self, highlightthickness=0, bg="#8ab3f5")
         self.canvas.pack(fill="both", expand=True, padx=16, pady=8)
 
         nav = ttk.Frame(self)
@@ -71,7 +83,8 @@ class FactPagerPage(tk.Frame):
         ttk.Button(nav, text="Next ", command=self.next_fact).pack(side="right")
 
         # Create one "card" (rectangle + text). Reposition on resize.
-        self.card_rect = self.canvas.create_rectangle(0, 0, 0, 0, outline="#222", width=2)
+        home_rect_color = "#d7e6f7"
+        self.card_rect = self.canvas.create_rectangle(0, 0, 0, 0, fill=home_rect_color, outline="#222", width=2)
 
         self.card_text = self.canvas.create_text(
             0, 0,
@@ -400,14 +413,14 @@ class AutoScrollPage(FactPagerPage):
 # ----------------------------------------------------------
 class HomePage(tk.Frame):
     def __init__(self, master, open_category_callback):
-        super().__init__(master)
+        super().__init__(master, bg="#d7e6f7")
         self.master = master
         self.open_category_callback = open_category_callback
 
         ttk.Label(self, text="Choose a Category", style="Title.TLabel").pack(pady=15)
 
 
-        grid_frame = tk.Frame(self)
+        grid_frame = tk.Frame(self, bg="#8ab3f5")
         grid_frame.pack()
 
         for i, cat in enumerate(categories):
